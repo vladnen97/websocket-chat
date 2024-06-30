@@ -5,10 +5,11 @@ import { Server, Socket } from 'socket.io'
 const app = express()
 const port = 3000
 
-const messages = ['dar', '123']
+const messages: string[] = []
 
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
+  connectionStateRecovery: {},
   cors: {
     origin: '*',
   },
@@ -29,7 +30,6 @@ io.on('connection', (socket: Socket) => {
   })
 
   socket.on('message', (msg: string) => {
-    console.log('message: ' + msg)
     messages.push(msg)
 
     io.emit('new message', msg)

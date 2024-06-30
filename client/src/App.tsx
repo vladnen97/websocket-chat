@@ -15,7 +15,7 @@ export function App() {
     })
 
     return () => {
-      socket.off('message')
+      socket.removeAllListeners()
     }
   }, [])
 
