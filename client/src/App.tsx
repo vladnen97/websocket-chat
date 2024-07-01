@@ -4,6 +4,7 @@ import { socket } from './socket'
 export function App() {
   const [message, setMessage] = useState('')
   const [receivedMessages, setReceivedMessages] = useState<string[]>([])
+  const [isAutoScroll, setIsAutoScroll] = useState<boolean>(true)
 
   const ref = useRef<HTMLDivElement>()
 
@@ -22,10 +23,10 @@ export function App() {
   }, [])
 
   useEffect(() => {
-    if (ref.current) {
+    if (ref.current && isAutoScroll) {
       ref.current.scrollTo(0, ref.current.scrollHeight)
     }
-  }, [receivedMessages])
+  }, [receivedMessages, isAutoScroll])
 
   const sendMessage = () => {
     socket.emit('message', message)
@@ -41,7 +42,20 @@ export function App() {
       }}
     >
       <h1 style={{ paddingBottom: '40px' }}>Home Page</h1>
-      <div ref={ref} style={{ height: 200, overflowY: 'scroll', width: 300 }}>
+      <div
+        ref={ref}
+        style={{ height: 200, overflowY: 'scroll', width: 300 }}
+        onScroll={(e) => {
+          const maxScrollHeight =
+            e.currentTarget.scrollHeight - e.currentTarget.clientHeight
+
+          if (maxScrollHeight === e.currentTarget.scrollTop) {
+            setIsAutoScroll(true)
+          } else {
+            setIsAutoScroll(false)
+          }
+        }}
+      >
         {receivedMessages.map((message) => (
           <div key={message} style={{ padding: '4px 6px' }}>
             {message}
