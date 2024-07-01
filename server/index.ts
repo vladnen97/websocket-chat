@@ -22,7 +22,7 @@ app.get('/', (req: Request, res: Response) => {
 
 // Обработка соединений
 io.on('connection', (socket: Socket) => {
-  console.log('a user connected')
+  console.log('a user connected', socket.id)
   socket.emit('init messages', messages)
 
   socket.on('disconnect', () => {

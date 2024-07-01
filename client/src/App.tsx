@@ -1,9 +1,11 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { socket } from './socket'
 
 export function App() {
   const [message, setMessage] = useState('')
   const [receivedMessages, setReceivedMessages] = useState<string[]>([])
+
+  const ref = useRef<HTMLDivElement>()
 
   useEffect(() => {
     socket.on('init messages', (msgs: string[]) => {
@@ -19,21 +21,36 @@ export function App() {
     }
   }, [])
 
+  useEffect(() => {
+    if (ref.current) {
+      ref.current.scrollTo(0, ref.current.scrollHeight)
+    }
+  }, [receivedMessages])
+
   const sendMessage = () => {
     socket.emit('message', message)
     setMessage('')
   }
 
   return (
-    <main>
-      <h1>Home Page</h1>
-      <div>
+    <main
+      style={{
+        display: 'flex',
+        alignItems: 'center',
+        flexDirection: 'column',
+      }}
+    >
+      <h1 style={{ paddingBottom: '40px' }}>Home Page</h1>
+      <div ref={ref} style={{ height: 200, overflowY: 'scroll', width: 300 }}>
         {receivedMessages.map((message) => (
-          <div key={message}>{message}</div>
+          <div key={message} style={{ padding: '4px 6px' }}>
+            {message}
+          </div>
         ))}
       </div>
-      <div>
+      <div style={{ paddingTop: '40px' }}>
         <input
+          style={{ width: '250px' }}
           type="text"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
