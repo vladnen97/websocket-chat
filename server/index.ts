@@ -10,7 +10,6 @@ const app = express()
 const port = 3000
 
 const messages: string[] = []
-const lpMessages: string[] = []
 
 const httpServer = createServer(app)
 const io = new Server(httpServer, {
