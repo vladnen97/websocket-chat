@@ -1,5 +1,6 @@
 import { LongPolling } from './LongPolling'
 import { WebSocket } from './WebSocket'
+import { ServerSentEvent } from './ServerSentEvent'
 
 export function App() {
   return (
@@ -18,6 +19,8 @@ export function App() {
         <LongPolling />
 
         <WebSocket />
+
+        <ServerSentEvent />
       </div>
     </main>
   )

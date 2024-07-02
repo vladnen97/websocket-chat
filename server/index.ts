@@ -33,6 +33,26 @@ app.get('/get-messages', (req: Request, res: Response) => {
   })
 })
 
+app.get('/sse/connect', (req: Request, res: Response) => {
+  res.writeHead(200, {
+    Connection: 'keep-alive',
+    'Content-type': 'text/event-stream',
+    'Cache-Control': 'no-cache',
+  })
+
+  emitter.on('newMessageSSE', (message: string) => {
+    res.write(`data: ${message}\n\n`)
+  })
+})
+
+app.post('/sse/new-messages', (req: Request, res: Response) => {
+  const { message } = req.body
+
+  emitter.emit('newMessageSSE', message)
+
+  res.status(200).json()
+})
+
 app.post('/new-messages', (req: Request, res: Response) => {
   const { message } = req.body
 
